@@ -785,7 +785,7 @@ NAN_METHOD(Database::Import)
     OPTIONAL_ARGUMENT_FUNCTION(3, callback);
 
     Local<Array> colIdsJS = Local<Array>::Cast(
-        options->Get(context, String::NewFromUtf8(isolate, "columnIds").ToLocalChecked()).ToLocalChecked());
+        options->Get(context, String::NewFromUtf8(isolate, "columnIds", NewStringType::kNormal).ToLocalChecked()).ToLocalChecked());
 
     std::vector<std::string> colIds;
     int colCount = colIdsJS->Length();
@@ -798,9 +798,9 @@ NAN_METHOD(Database::Import)
 
     char delimChar = ',';
 
-    if (options->Has(context, String::NewFromUtf8(isolate, "delimiter").ToLocalChecked()).FromJust())
+    if (options->Has(context, String::NewFromUtf8(isolate, "delimiter", NewStringType::kNormal).ToLocalChecked()).FromJust())
     {
-        Nan::Utf8String delimNanStr(options->Get(context, String::NewFromUtf8(isolate, "delimiter").ToLocalChecked()).ToLocalChecked());
+        Nan::Utf8String delimNanStr(options->Get(context, String::NewFromUtf8(isolate, "delimiter", NewStringType::kNormal).ToLocalChecked()).ToLocalChecked());
         if (delimNanStr.length() != 1)
         {
             return Nan::ThrowError("options.delimeter must be a string of length 1");
@@ -809,11 +809,11 @@ NAN_METHOD(Database::Import)
     }
 
     bool noHeaderRow = false;
-    if (options->Has(context, String::NewFromUtf8(isolate, "noHeaderRow").ToLocalChecked()).FromJust())
+    if (options->Has(context, String::NewFromUtf8(isolate, "noHeaderRow", NewStringType::kNormal).ToLocalChecked()).FromJust())
     {
         Local<Value> noHeaderValue =
-            options->Get(context, String::NewFromUtf8(isolate, "noHeaderRow").ToLocalChecked()).ToLocalChecked();
-        noHeaderRow = noHeaderValue->BooleanValue(isolate);
+            options->Get(context, String::NewFromUtf8(isolate, "noHeaderRow", NewStringType::kNormal).ToLocalChecked()).ToLocalChecked();
+        noHeaderRow = noHeaderValue->BooleanValue(context).FromJust();
     }
 
     ImportOptions importOptions(colIds, delimChar, noHeaderRow);
